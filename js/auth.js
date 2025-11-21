@@ -22,7 +22,7 @@ export class Auth {
         const login = this.loginInput.value.trim();
         const pass = this.passInput.value.trim();
 
-        if (login === 'StepanovaMira2005holimail.troll' && pass === '21112005') {
+        if (login === 'StepanovaMira2005@holimail.troll' && pass === '21112005') {
             
             // Успешный вход
             this.authScreen.style.opacity = '0';
@@ -44,4 +44,5 @@ export class Auth {
             }, 500);
         }
     }
+
 }
