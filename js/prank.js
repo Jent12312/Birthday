@@ -7,7 +7,6 @@ export class PrankButton {
 
     init() {
         this.btn.addEventListener('mouseover', () => {
-            // Очищаем предыдущий таймер, если навели снова быстро
             if (this.resetTimer) clearTimeout(this.resetTimer);
 
             const maxX = window.innerWidth - this.btn.offsetWidth - 20;
@@ -22,7 +21,6 @@ export class PrankButton {
             this.btn.style.bottom = 'auto';
             this.btn.style.right = 'auto';
 
-            // Запускаем таймер возврата на базу (1.5 сек)
             this.resetTimer = setTimeout(() => {
                 this.resetPosition();
             }, 1500);
@@ -35,7 +33,6 @@ export class PrankButton {
     }
 
     resetPosition() {
-        // Возвращаем на исходную (css классы вернут на место)
         this.btn.style.position = 'fixed';
         this.btn.style.left = 'auto';
         this.btn.style.top = 'auto';

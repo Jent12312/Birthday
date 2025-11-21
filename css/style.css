@@ -3,11 +3,12 @@
    ========================================= */
 :root {
     --primary: #ff4081;   /* Ярко-розовый */
-    --secondary: #7c4dff; /* Глубокий фиолетовый */
-    --bg-dark: #11111f;   /* Темный фон сайта */
+    --secondary: #7c4dff; /* Фиолетовый */
+    --bg-dark: #11111f;   /* Темный фон */
     --text-light: #fff;
-    --gold: #ffd700;      /* Золото */
-    --poker-green: #2e7d32; /* Сукно для покера */
+    --gold: #ffd700;      /* Золотой */
+    --success: #00e676;   /* Зеленый */
+    --error: #f44336;     /* Красный */
 }
 
 * {
@@ -21,10 +22,10 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-light);
     min-height: 100vh;
-    overflow-x: hidden; /* Блокируем горизонтальную прокрутку */
+    overflow-x: hidden; /* Защита от горизонтального скролла */
 }
 
-/* Холст для конфетти (поверх всего) */
+/* Холст для салюта (поверх всего, но пропускает клики) */
 #confetti-canvas {
     position: fixed;
     top: 0; left: 0;
@@ -44,7 +45,7 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Пульсация (для важных кнопок) */
+/* Пульсация для важных кнопок */
 .spin-pulse { animation: pulse 2s infinite; }
 @keyframes pulse {
     0% { box-shadow: 0 0 0 0 rgba(124, 77, 255, 0.4); }
@@ -52,12 +53,18 @@ body {
     100% { box-shadow: 0 0 0 0 rgba(124, 77, 255, 0); }
 }
 
+.error-text {
+    color: var(--primary);
+    font-size: 14px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
 /* =========================================
-   3. КНОПКИ (UI)
+   3. КНОПКИ И ИНПУТЫ (ОБЩИЕ)
    ========================================= */
 button { cursor: pointer; outline: none; }
 
-/* Основная кнопка */
 .btn-primary {
     background: var(--primary);
     color: white;
@@ -81,7 +88,6 @@ button { cursor: pointer; outline: none; }
     transform: none;
 }
 
-/* Кнопка с обводкой */
 .btn-outline {
     background: transparent;
     border: 2px solid var(--secondary);
@@ -94,7 +100,6 @@ button { cursor: pointer; outline: none; }
 }
 .btn-outline:hover { background: rgba(124, 77, 255, 0.2); }
 
-/* Маленькая кнопка (внутри книги) */
 .btn-small {
     background: var(--secondary);
     color: white;
@@ -103,47 +108,79 @@ button { cursor: pointer; outline: none; }
     border-radius: 15px;
     margin-top: 15px;
     font-size: 14px;
+    cursor: pointer;
 }
 
-/* Кнопка-пранк (Выход) */
+/* Кнопка-пранк (выход) */
 .btn-danger {
-    background: #f44336;
+    background: var(--error);
     color: white;
     border: none;
-    width: 100px; height: 40px;
+    width: 100px;
+    height: 40px;
     border-radius: 20px;
-    position: fixed; bottom: 20px; right: 20px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     z-index: 1000;
-    font-weight: bold;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 /* =========================================
-   4. ЭКРАН ВХОДА (VIP СТИЛЬ)
+   4. ЭКРАНЫ (ОСНОВНОЙ ЛЕЙАУТ)
    ========================================= */
 .screen {
-    width: 100%; min-height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    transition: opacity 0.5s;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.screen.scrollable {
+    justify-content: flex-start;
+    height: auto;
+    overflow-y: auto;
+    padding-bottom: 80px; /* Место для скролла внизу */
 }
 
-/* Карточка входа */
+/* Верхняя навигация */
+.top-nav {
+    position: absolute;
+    top: 20px; right: 20px;
+    z-index: 100;
+}
+.nav-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin-left: 5px;
+    transition: 0.3s;
+    font-size: 14px;
+    backdrop-filter: blur(5px);
+    cursor: pointer;
+}
+.nav-btn:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* =========================================
+   5. ОКНО ВХОДА (СТИЛЬНОЕ)
+   ========================================= */
 .auth-card {
     background: rgba(255, 255, 255, 0.08);
     padding: 40px 30px;
     border-radius: 20px;
     text-align: center;
-    width: 100%; max-width: 350px;
+    width: 100%;
+    max-width: 350px;
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
     position: relative;
-    overflow: hidden;
+    transition: transform 0.3s;
 }
 
-/* Аватарка */
 .auth-avatar {
     width: 70px; height: 70px;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -159,24 +196,32 @@ button { cursor: pointer; outline: none; }
 .auth-card h2 { margin-bottom: 5px; font-weight: 700; letter-spacing: 1px; }
 .auth-card p { font-size: 13px; color: #aaa; margin-bottom: 30px; }
 
-/* Поля ввода с плавающим лейблом */
-.input-group { position: relative; margin-bottom: 25px; text-align: left; }
-
+/* Инпуты с плавающим лейблом */
+.input-group {
+    position: relative;
+    margin-bottom: 25px;
+    text-align: left;
+}
 .input-group input {
-    width: 100%; padding: 10px 0;
-    font-size: 16px; color: #fff;
-    border: none; border-bottom: 2px solid #555;
-    outline: none; background: transparent;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 0;
+    border: none;
+    border-bottom: 2px solid #555;
+    outline: none;
+    background: transparent;
     transition: border-color 0.3s;
 }
 .input-group label {
-    position: absolute; top: 10px; left: 0;
-    font-size: 16px; color: #999;
+    position: absolute;
+    top: 10px; left: 0;
+    font-size: 16px;
+    color: #999;
     pointer-events: none;
     transition: 0.3s ease all;
 }
-
-/* Анимация лейбла */
 .input-group input:focus ~ label,
 .input-group input:valid ~ label {
     top: -20px; font-size: 12px; color: var(--primary);
@@ -186,46 +231,28 @@ button { cursor: pointer; outline: none; }
     border-bottom-color: var(--primary);
 }
 
-/* Кнопка логина */
 .btn-login {
-    width: 100%; padding: 12px;
+    width: 100%;
+    padding: 12px;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
-    border: none; border-radius: 25px;
-    color: white; font-size: 16px; font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
     box-shadow: 0 5px 15px rgba(124, 77, 255, 0.4);
     transition: 0.3s;
 }
-.btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(124, 77, 255, 0.6); }
+.btn-login:hover { transform: translateY(-2px); }
 
-/* Тряска при ошибке */
-.shake { animation: shake 0.5s; border-color: #f44336 !important; }
+/* Анимация ошибки (тряска) */
+.shake { animation: shake 0.5s; border-color: var(--error) !important; }
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-10px); }
     75% { transform: translateX(10px); }
 }
-
-/* =========================================
-   5. ОСНОВНОЙ ЭКРАН И НАВИГАЦИЯ
-   ========================================= */
-.screen.scrollable {
-    justify-content: flex-start;
-    height: auto;
-    overflow-y: auto;
-    padding-bottom: 80px;
-}
-
-.top-nav { position: absolute; top: 20px; right: 20px; z-index: 100; }
-.nav-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-    padding: 8px 15px; border-radius: 20px;
-    margin-left: 5px; transition: 0.3s; font-size: 14px;
-    backdrop-filter: blur(5px);
-}
-.nav-btn:hover { background: rgba(255, 255, 255, 0.3); }
 
 /* =========================================
    6. 3D КНИГА (ОТКРЫТКА)
@@ -234,10 +261,10 @@ button { cursor: pointer; outline: none; }
     margin-top: 60px;
     perspective: 1500px;
     width: 320px; height: 460px;
-    position: relative; z-index: 10;
+    position: relative;
+    z-index: 10;
     flex-shrink: 0;
 }
-
 .book {
     width: 100%; height: 100%;
     position: relative;
@@ -247,12 +274,13 @@ button { cursor: pointer; outline: none; }
 }
 .book:hover { transform: translateY(-5px); }
 
-/* Обложка */
 .cover {
-    position: absolute; width: 100%; height: 100%;
+    position: absolute;
+    width: 100%; height: 100%;
     transform-origin: left;
     transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
-    transform-style: preserve-3d; z-index: 2;
+    transform-style: preserve-3d;
+    z-index: 2;
     border-radius: 5px 15px 15px 5px;
 }
 .book.open .cover { transform: rotateY(-160deg); }
@@ -260,14 +288,15 @@ button { cursor: pointer; outline: none; }
 .front {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     position: absolute; width: 100%; height: 100%;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    text-align: center; backface-visibility: hidden;
-    padding: 20px; color: white;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    backface-visibility: hidden;
+    padding: 20px;
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.6);
     border-radius: 5px 15px 15px 5px;
+    color: white;
 }
-
-/* Золотая рамка */
 .deco-border {
     position: absolute;
     top: 15px; left: 15px; right: 15px; bottom: 15px;
@@ -275,10 +304,11 @@ button { cursor: pointer; outline: none; }
     border-radius: 5px 10px 10px 5px;
     pointer-events: none;
 }
-
 .front h1 {
-    font-family: 'Georgia', serif; font-size: 2.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); margin-bottom: 10px;
+    font-family: 'Georgia', serif;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
 }
 .click-hint {
     font-size: 0.9rem; opacity: 0.9; margin-top: 20px;
@@ -287,18 +317,23 @@ button { cursor: pointer; outline: none; }
 @keyframes bounceText { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
 .back {
-    background: #333; transform: rotateY(180deg);
-    backface-visibility: hidden; position: absolute;
-    width: 100%; height: 100%; border-radius: 5px 15px 15px 5px;
+    background: #333;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
+    position: absolute;
+    width: 100%; height: 100%;
+    border-radius: 5px 15px 15px 5px;
 }
 
-/* Страница */
 .page {
-    position: absolute; width: 98%; height: 98%;
+    position: absolute;
+    width: 98%; height: 98%;
     top: 1%; left: 0;
-    background: #fffaf0; color: #333;
+    background: #fffaf0;
+    color: #333;
     border-radius: 5px 15px 15px 5px;
-    z-index: 1; display: flex; justify-content: center; align-items: center;
+    z-index: 1;
+    display: flex; justify-content: center; align-items: center;
     box-shadow: inset 5px 0 10px rgba(0, 0, 0, 0.1);
     background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px);
     background-size: 20px 100%;
@@ -306,94 +341,214 @@ button { cursor: pointer; outline: none; }
 .page-content {
     text-align: center; padding: 20px;
     width: 90%; height: 90%;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
 }
 .page h2 { color: var(--primary); margin-bottom: 15px; font-family: 'Georgia', serif; }
 .page p { line-height: 1.6; font-size: 15px; color: #555; margin-bottom: 10px; }
 
 /* =========================================
-   7. КОЛЕСО ФОРТУНЫ
+   7. ИГРОВАЯ СЕКЦИЯ (КОЛЕСО)
    ========================================= */
 .game-section {
-    margin-top: 60px; text-align: center;
-    width: 100%; max-width: 500px; padding: 0 20px;
+    margin-top: 60px;
+    text-align: center;
+    width: 100%; max-width: 500px;
+    padding: 0 20px;
 }
 
 .wheel-container-border {
-    position: relative; width: 320px; height: 320px;
+    position: relative;
+    width: 320px; height: 320px;
     margin: 30px auto;
     border-radius: 50%;
     border: 8px solid white;
     box-shadow: 0 0 25px rgba(255, 64, 129, 0.3);
     overflow: hidden; 
 }
-
 .pointer {
-    position: absolute; top: -5px; left: 50%;
-    transform: translateX(-50%); z-index: 20;
-    font-size: 45px; color: var(--gold);
+    position: absolute;
+    top: -5px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    font-size: 45px;
+    color: var(--gold);
     text-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
     filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
 }
-
 .wheel {
-    width: 100%; height: 100%; border-radius: 50%;
+    width: 100%; height: 100%;
+    border-radius: 50%;
     position: relative;
     background: conic-gradient(
-        #ff4081 0deg 60deg, #222 60deg 120deg, 
-        #7c4dff 120deg 180deg, #222 180deg 240deg, 
-        #ff4081 240deg 300deg, #222 300deg 360deg
+        #ff4081 0deg 60deg,
+        #222 60deg 120deg,
+        #7c4dff 120deg 180deg,
+        #222 180deg 240deg,
+        #ff4081 240deg 300deg,
+        #222 300deg 360deg
     );
     transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); 
 }
 
-/* Текст на секторах */
 .label {
-    position: absolute; top: 0; left: 50%;
+    position: absolute;
+    top: 0; left: 50%;
     width: 40px; height: 50%;
     margin-left: -20px;
     transform-origin: bottom center;
     transform: rotate(calc(60deg * var(--i) + 30deg));
-    display: flex; justify-content: center; padding-top: 25px;
+    display: flex; justify-content: center;
+    padding-top: 25px;
     pointer-events: none;
 }
 .label span {
     color: white; font-weight: bold; font-size: 14px;
-    text-shadow: 0 1px 2px black; text-align: center;
-    transition: all 0.5s;
+    line-height: 1.3; text-shadow: 0 1px 2px black;
+    text-align: center; transition: all 0.5s;
 }
 
 /* Состояние "Взято" */
 .label.claimed span {
     opacity: 0.3; color: #888;
-    text-decoration: line-through; transform: scale(0.8);
+    text-decoration: line-through;
+    transform: scale(0.8);
 }
 .label.claimed span::after {
-    content: '✔'; display: block; color: #00e676;
-    font-size: 18px; margin-top: 2px; text-decoration: none;
+    content: '✔'; display: block;
+    color: var(--success); font-size: 18px;
+    margin-top: 2px; text-decoration: none;
 }
 
 /* =========================================
-   8. ПОКЕР (ИГРА)
+   8. МОДАЛЬНЫЕ ОКНА (ОБЩИЕ СТИЛИ)
    ========================================= */
-.poker-table {
-    background: var(--poker-green);
-    color: white; border: 5px solid #1b5e20;
-    width: 95%; max-width: 550px;
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 2000; padding: 20px;
+}
+.modal-content {
+    background: white; color: #333;
+    padding: 30px;
+    width: 100%; max-width: 400px;
+    border-radius: 15px;
+    position: relative;
+    text-align: center;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+.modal-content.large-modal { max-width: 600px; }
+
+.close-modal {
+    position: absolute;
+    right: 15px; top: 10px;
+    font-size: 30px; cursor: pointer;
+    color: #999;
+}
+.close-modal:hover { color: #333; }
+
+/* Поля ответа в модалках */
+.answer-box {
+    display: flex; gap: 10px;
+    justify-content: center; margin-top: 20px;
+}
+.answer-box input {
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none; text-align: center;
+    width: 60%;
 }
 
+/* =========================================
+   9. СПИСКИ ЗАДАНИЙ И ГАЛЕРЕЯ
+   ========================================= */
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px; margin-top: 20px;
+}
+.task-btn {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 15px 5px;
+    border-radius: 8px;
+    font-size: 14px; cursor: pointer;
+    transition: 0.2s;
+}
+.task-btn:hover {
+    transform: translateY(-2px); filter: brightness(1.1);
+}
+.task-btn.done {
+    background: #4caf50; opacity: 0.6; cursor: default; transform: none;
+}
+
+/* Галерея воспоминаний */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px; padding: 10px;
+}
+.photo-item {
+    width: 100%; aspect-ratio: 1;
+    overflow: hidden; border-radius: 10px;
+    cursor: pointer; border: 2px solid transparent;
+    transition: transform 0.3s, border-color 0.3s;
+    position: relative;
+}
+.photo-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s;
+}
+.photo-item:hover {
+    border-color: var(--primary); transform: scale(0.98);
+}
+.photo-item:hover img { transform: scale(1.1); }
+
+/* Лайтбокс (фото на весь экран) */
+.lightbox {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 3000; animation: fadeIn 0.3s;
+}
+.lightbox img {
+    max-width: 90%; max-height: 90%;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+.close-lightbox {
+    position: absolute; top: 20px; right: 30px;
+    font-size: 40px; color: white; cursor: pointer;
+    transition: 0.3s;
+}
+.close-lightbox:hover { color: var(--primary); }
+
+
+/* =========================================
+   10. СТИЛИ МИНИ-ИГР И ЗАДАНИЙ
+   ========================================= */
+
+/* --- Покер --- */
+.poker-table {
+    background: #2e7d32; color: white;
+    border: 5px solid #1b5e20; width: 95%;
+}
 .poker-info {
     display: flex; justify-content: space-between;
-    margin: 15px 0; font-size: 18px; font-weight: bold;
+    margin: 15px 0; font-weight: bold;
     background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;
 }
-
 .cards-container {
-    display: flex; justify-content: center; gap: 8px;
-    margin: 20px 0; perspective: 600px; min-height: 110px;
+    display: flex; justify-content: center;
+    gap: 5px; margin: 20px 0; perspective: 600px;
 }
-
-/* Карта */
 .poker-card {
     width: 65px; height: 100px;
     background: white; border-radius: 8px;
@@ -404,106 +559,135 @@ button { cursor: pointer; outline: none; }
     box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     animation: flipIn 0.5s forwards;
     user-select: none; cursor: pointer;
-    position: relative; transition: transform 0.2s, border 0.2s;
+    position: relative;
+    transition: transform 0.2s, border 0.2s;
 }
-.poker-card:hover { transform: translateY(-5px); }
-.poker-card.red { color: #d32f2f; }
-.poker-card.black { color: #212121; }
-
-@keyframes flipIn {
-    from { transform: rotateY(90deg); opacity: 0; }
-    to { transform: rotateY(0); opacity: 1; }
-}
-
-/* Выбранная карта (HOLD) */
 .poker-card.held {
-    border: 3px solid gold;
-    transform: translateY(-12px);
+    border: 3px solid var(--gold);
+    transform: translateY(-10px);
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
 }
 .poker-card.held::after {
-    content: 'HOLD'; position: absolute;
-    bottom: -25px; left: 50%; transform: translateX(-50%);
-    color: gold; font-size: 12px; font-weight: bold;
-    text-shadow: 0 1px 2px black;
+    content: 'HOLD'; position: absolute; bottom: -25px;
+    left: 50%; transform: translateX(-50%);
+    color: var(--gold); font-size: 12px; font-weight: bold;
     background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px;
 }
+.poker-card.red { color: #d32f2f; }
+.poker-card.black { color: #212121; }
+@keyframes flipIn { from { transform: rotateY(90deg); opacity: 0; } to { transform: rotateY(0); opacity: 1; } }
 
-/* Слот для пустой карты */
-.card-slot {
-    width: 65px; height: 100px;
-    background: rgba(0,0,0,0.2);
-    border: 2px dashed rgba(255,255,255,0.3);
-    border-radius: 8px;
+/* --- QR код --- */
+.qr-container {
+    background: white; padding: 15px;
+    border-radius: 10px; display: inline-block; margin: 20px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.qr-container img { display: block; width: 180px; height: 180px; }
+.qr-caption {
+    font-family: 'Courier New', monospace;
+    font-size: 24px; font-weight: bold; margin-top: 10px;
+}
+.hint-icon { font-size: 30px; cursor: pointer; transition: transform 0.2s; user-select: none; }
+.hint-icon:hover { transform: scale(1.2); }
+.custom-tooltip {
+    position: absolute; top: -40px; right: 0;
+    background: #333; color: #fff;
+    padding: 5px 10px; border-radius: 5px; font-size: 12px;
+    opacity: 0; pointer-events: none; transition: 0.3s;
+}
+.custom-tooltip.visible { opacity: 1; }
+
+/* --- Шифр и Математика --- */
+.cipher-container {
+    background: #f0f0f0; padding: 20px;
+    border-radius: 10px; margin: 20px 0;
+    border: 2px dashed #999;
+}
+.cipher-code {
+    font-family: 'Courier New', monospace;
+    font-size: 28px; font-weight: bold; letter-spacing: 3px;
+}
+.hint-link { text-decoration: none; display: inline-block; margin-bottom: 20px; background: #2196f3; }
+.task-img { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+/* --- Цезарь (Венок) и Аудио --- */
+.caesar-container {
+    position: relative; width: 250px; height: 250px;
+    margin: 10px auto; display: flex; justify-content: center; align-items: center;
+}
+.laurel-img { width: 100%; height: 100%; object-fit: contain; opacity: 0.9; }
+.audio-wrapper { width: 100%; margin-bottom: 20px; }
+audio { width: 100%; height: 40px; }
+
+/* --- Химия --- */
+.chem-inputs { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.chem-inputs input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; text-align: center; }
+
+/* --- Слайдер --- */
+.slider-container {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; margin: 20px 0;
+}
+.slide-wrapper {
+    position: relative; width: 100%; height: 300px;
+    background: #000; border-radius: 10px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+}
+.slide-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.slider-btn {
+    background: var(--primary); width: 40px; height: 40px;
+    border-radius: 50%; font-size: 20px; flex-shrink: 0;
+}
+#slide-counter {
+    position: absolute; bottom: 10px; right: 10px;
+    background: rgba(0,0,0,0.6); color: white;
+    padding: 5px 10px; border-radius: 10px; font-size: 12px;
 }
 
-#poker-status {
-    min-height: 24px; margin-bottom: 15px;
-    font-weight: bold; color: #ffeb3b;
-    text-shadow: 0 1px 2px black;
+/* --- Гео и Телефон --- */
+.geo-code {
+    font-family: monospace; font-size: 18px;
+    background: #eee; padding: 10px; border-radius: 5px;
+    margin: 20px 0; color: var(--secondary); font-weight: bold;
 }
+
+/* --- Финальное задание (Текст) --- */
+.math-riddle {
+    background: #333; color: #fff;
+    padding: 15px; border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 20px; text-align: left;
+    display: inline-block; border: 1px solid #555;
+}
+.math-riddle p { margin: 5px 0; font-size: 16px; font-weight: bold; }
+
+/* --- Игры (Ван Гог, Пятнашки 4x4) --- */
+.art-img-container { margin: 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+/* Пятнашки 4x4 */
+.puzzle-board {
+    width: 300px; height: 300px;
+    margin: 20px auto;
+    background: #333; position: relative;
+    border: 5px solid #5d4037; border-radius: 5px;
+}
+.puzzle-tile {
+    width: 75px;  /* 300 / 4 = 75px */
+    height: 75px;
+    position: absolute;
+    background-image: url('../assets/gramophone.png');
+    background-size: 300px 300px; /* Картинка на все поле */
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    border: 1px solid rgba(255,255,255,0.5);
+    box-sizing: border-box;
+}
+.puzzle-tile.empty { background: none; border: none; cursor: default; }
 
 /* =========================================
-   9. МОДАЛЬНЫЕ ОКНА
+   11. ФИНАЛЬНЫЙ ПРИЗ
    ========================================= */
-.modal {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 2000; padding: 20px;
-}
-
-.modal-content {
-    background: white; color: #333; padding: 30px;
-    width: 100%; max-width: 400px; border-radius: 15px;
-    position: relative; text-align: center;
-    max-height: 90vh; overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
-.modal-content.large-modal { max-width: 600px; }
-
-.close-modal {
-    position: absolute; right: 15px; top: 10px;
-    font-size: 30px; line-height: 30px;
-    cursor: pointer; color: #999; transition: 0.2s;
-}
-.close-modal:hover { color: #333; }
-
-/* Сетка заданий */
-.tasks-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 10px; margin-top: 20px;
-}
-.task-btn {
-    background: var(--secondary); color: white;
-    border: none; padding: 15px 5px; border-radius: 8px;
-    font-size: 14px; cursor: pointer; transition: 0.2s;
-}
-.task-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-.task-btn.done {
-    background: #4caf50; opacity: 0.6;
-    cursor: default; transform: none;
-}
-
-/* Галерея */
-.gallery-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 10px; margin-top: 20px;
-}
-.photo-card {
-    background: #eee; border-radius: 10px;
-    overflow: hidden; aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-.img-placeholder {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: bold;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-
-/* Окно Приза */
 .prize-content {
     background: linear-gradient(135deg, #fff, #f8f8f8);
     border: 4px solid var(--gold);
@@ -520,6 +704,5 @@ button { cursor: pointer; outline: none; }
     50% { transform: translateY(-15px); }
 }
 .prize-text {
-    font-size: 22px; font-weight: bold;
-    color: var(--primary); margin: 15px 0; line-height: 1.4;
+    font-size: 22px; font-weight: bold; color: var(--primary); margin: 15px 0; line-height: 1.4;
 }

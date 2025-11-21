@@ -34,15 +34,12 @@ export class Auth {
             }, 800);
 
         } else {
-            // Ошибка - Тряска карточки
             this.card.classList.add('shake');
             this.passInput.value = ''; 
             
-            // Убираем класс, чтобы можно было потрясти снова
             setTimeout(() => {
                 this.card.classList.remove('shake');
             }, 500);
         }
     }
-
 }

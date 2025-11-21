@@ -9,13 +9,11 @@ export class Book {
     }
 
     init() {
-        // Клик по книге только открывает её
         this.book.addEventListener('click', () => {
             if (!this.opened) {
                 this.book.classList.add('open');
                 this.opened = true;
 
-                // Показываем контент ниже, но НЕ скроллим сами
                 setTimeout(() => {
                     this.gameSection.classList.remove('hidden');
                     this.nav.classList.remove('hidden');
@@ -23,9 +21,8 @@ export class Book {
             }
         });
 
-        // Отдельная кнопка для скролла
         this.scrollBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Чтобы клик не прошел на книгу (хотя не критично)
+            e.stopPropagation(); 
             this.gameSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     }

@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday!</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Можно добавить фавиконку -->
+    <link rel="icon" href="assets/favicon.ico"> 
 </head>
 <body>
+    <!-- Холст для конфетти -->
     <canvas id="confetti-canvas"></canvas>
 
-<!-- 1. Вход (Обновленный) -->
+    <!-- ============================
+         1. ЭКРАН ВХОДА
+         ============================ -->
     <section id="auth-screen" class="screen active">
         <div class="auth-card">
             <div class="auth-avatar">👑</div>
@@ -30,15 +35,18 @@
         </div>
     </section>
 
-    <!-- ОСНОВНОЙ ЭКРАН -->
+    <!-- ============================
+         2. ГЛАВНЫЙ ЭКРАН
+         ============================ -->
     <section id="main-screen" class="screen hidden scrollable">
         
+        <!-- Навигация -->
         <nav class="top-nav hidden" id="top-nav">
             <button id="memories-btn" class="nav-btn">📸 Воспоминания</button>
             <button id="about-btn" class="nav-btn">ℹ️ О нас</button>
         </nav>
 
-        <!-- ОТКРЫТКА -->
+        <!-- ОТКРЫТКА (КНИГА) -->
         <div class="book-container">
             <div class="book" id="book">
                 <div class="cover">
@@ -51,20 +59,19 @@
                 </div>
                 <div class="page">
                     <div class="page-content">
-                        <h2>Поздравляем! 🎂</h2>
+                        <h2>Поздравляю! 🎂</h2>
                         <p>
                             Пусть каждый день приносит радость, а удача преследует тебя! 
                             Ты заслуживаешь самого лучшего!
                         </p>
                         <p>Внизу тебя ждут призы. Готов?</p>
-                        <!-- Кнопка для скролла вниз -->
                         <button id="scroll-down-btn" class="btn-small">К подаркам 👇</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ИГРОВАЯ ЗОНА -->
+        <!-- КОЛЕСО ФОРТУНЫ -->
         <div id="game-section" class="game-section hidden fade-in">
             <h2>Колесо Фортуны</h2>
             <p id="game-msg" style="color: #ff4081; font-weight: bold;">Сначала выполни задания, чтобы получить спины!</p>
@@ -90,12 +97,15 @@
             </div>
         </div>
 
+        <!-- Кнопка выхода (Пранк) -->
         <button id="exit-btn" class="btn-danger">Выход</button>
     </section>
 
-    <!-- МОДАЛКИ -->
+    <!-- ============================
+         3. МОДАЛЬНЫЕ ОКНА ЗАДАНИЙ
+         ============================ -->
 
-    <!-- 1. Задания -->
+    <!-- Меню выбора заданий -->
     <div id="tasks-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -104,36 +114,276 @@
         </div>
     </div>
 
-    <!-- 2. Воспоминания (Галерея) -->
-    <div id="memories-modal" class="modal hidden">
-        <div class="modal-content large-modal">
-            <span class="close-modal">&times;</span>
-            <h2>Наши воспоминания</h2>
-            <div class="gallery-grid">
-                <!-- Заглушки для фото (потом поменяешь src на свои) -->
-                <div class="photo-card"><div class="img-placeholder" style="background: #ff9a9e">Фото 1</div></div>
-                <div class="photo-card"><div class="img-placeholder" style="background: #fad0c4">Фото 2</div></div>
-                <div class="photo-card"><div class="img-placeholder" style="background: #a18cd1">Фото 3</div></div>
-                <div class="photo-card"><div class="img-placeholder" style="background: #fbc2eb">Фото 4</div></div>
+    <!-- Задание 1: ПОКЕР -->
+    <div id="poker-modal" class="modal hidden">
+        <div class="modal-content poker-table">
+            <span class="close-modal" id="close-poker">&times;</span>
+            <h2>🃏 Poker Challenge</h2>
+            <div class="poker-info">
+                <div class="balance-box">Баланс: <span id="poker-balance">500</span> 💰</div>
+                <div class="goal-box">Цель: 1000 🎯</div>
             </div>
+            <div class="cards-container" id="poker-cards"></div>
+            <p id="poker-status">Собери комбинацию!</p>
+            <button id="poker-deal-btn" class="btn-primary">Ставка 50 и Сдача</button>
         </div>
     </div>
 
-    <!-- 3. О нас -->
+    <!-- Задание 2: QR КОД -->
+    <div id="qr-modal" class="modal hidden">
+        <div class="modal-content qr-content">
+            <span class="close-modal" id="close-qr">&times;</span>
+            <div class="qr-header">
+                <h2>Задание №2</h2>
+                <div class="hint-wrapper">
+                    <div id="qr-hint-btn" class="hint-icon">💡</div>
+                    <div id="qr-tooltip" class="custom-tooltip hidden">вопросительный знак</div>
+                </div>
+            </div>
+            <p>Сканируй и ищи ответ...</p>
+            <div class="qr-container">
+                <!-- Ссылка на QR -->
+                <img src="http://qrcoder.ru/code/?https%3A%2F%2Frutube.ru%2Fvideo%2Fc6cc4d620b1d4338901770a44b3e82f4%2F&4&0" alt="QR Code">
+                <div class="qr-caption">16:4</div>
+            </div>
+            <div class="answer-box">
+                <input type="text" id="qr-answer" placeholder="Секретное слово" autocomplete="off">
+                <button id="qr-submit-btn" class="btn-primary">Проверить</button>
+            </div>
+            <p id="qr-error" class="error-text hidden">Неверно!</p>
+        </div>
+    </div>
+
+    <!-- Задание 3: ШИФР (СЫРНИК) -->
+    <div id="task3-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-task3">&times;</span>
+            <h2>Задание №3</h2>
+            <p>Расшифруй послание:</p>
+            <div class="cipher-container">
+                <div class="cipher-code">19 29 18 15 10 12</div>
+            </div>
+            <div class="hint-section">
+                <a href="https://ru.wikipedia.org/wiki/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BB%D1%84%D0%B0%D0%B2%D0%B8%D1%82" target="_blank" class="btn-small hint-link">Нужна подсказка? 🔗</a>
+            </div>
+            <div class="answer-box">
+                <input type="text" id="task3-answer" placeholder="Ответ..." autocomplete="off">
+                <button id="task3-submit" class="btn-primary">Ответить</button>
+            </div>
+            <p id="task3-error" class="error-text hidden">Неправильно!</p>
+        </div>
+    </div>
+
+    <!-- Задание 4: МАТЕМАТИКА (ЛЮБОВЬ) -->
+    <div id="task4-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-task4">&times;</span>
+            <h2>Задание №4</h2>
+            <p class="love-text">От всех нас ❤️</p>
+            <div class="math-container">
+                <img src="assets/math_task.jpg" alt="Math" class="task-img">
+            </div>
+            <p class="math-note">* Решать его не надо!</p>
+            <div class="answer-box">
+                <input type="text" id="task4-answer" placeholder="Введи фразу..." autocomplete="off">
+                <button id="task4-submit" class="btn-primary">Ответить</button>
+            </div>
+            <p id="task4-error" class="error-text hidden">Подумай ещё...</p>
+        </div>
+    </div>
+
+    <!-- Задание 5: ЦЕЗАРЬ + АУДИО -->
+    <div id="task5-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-task5">&times;</span>
+            <h2>Задание №5</h2>
+            <p>Послушай подсказку...</p>
+            
+            <div class="caesar-container">
+                <img src="assets/laurel.jpg" alt="Laurel" class="laurel-img">
+            </div>
+
+            <div class="audio-wrapper">
+                <audio controls>
+                    <source src="assets/output.wav" type="audio/wav">
+                </audio>
+            </div>
+
+            <div class="answer-box">
+                <input type="text" id="task5-answer" placeholder="Введи ответ (но не 'кто это?')" autocomplete="off">
+                <button id="task5-submit" class="btn-primary">Ответить</button>
+            </div>
+            <p id="task5-error" class="error-text hidden">Неверно!</p>
+        </div>
+    </div>
+
+    <!-- Задание 6: ХИМИЯ -->
+    <div id="task6-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-task6">&times;</span>
+            <h2>Задание №6</h2>
+            <p style="font-size: 14px; text-align: left; line-height: 1.5;">
+                Осадок содержит металл <b>X</b> и галоген <b>Y</b>.<br>
+                Металл X — тяжёлый (207.2 г/моль).<br>
+                Галоген Y — фиолетовые пары (253.8 г/моль).<br>
+                Смешали X и Y — выпал красивый осадок.
+            </p>
+            <div class="chem-inputs">
+                <input type="text" id="task6-x" placeholder="Элемент X">
+                <input type="text" id="task6-y" placeholder="Элемент Y">
+                <input type="text" id="task6-reaction" placeholder="Название реакции">
+            </div>
+            <button id="task6-submit" class="btn-primary" style="margin-top: 20px;">Синтезировать</button>
+            <p id="task6-error" class="error-text hidden">Опыт не удался!</p>
+        </div>
+    </div>
+
+    <!-- Задание 7: СЛАЙДЕР -->
+    <div id="task7-modal" class="modal hidden">
+        <div class="modal-content large-modal">
+            <span class="close-modal" id="close-task7">&times;</span>
+            <h2>Задание №7</h2>
+            <div class="slider-container">
+                <button id="prev-slide" class="slider-btn">❮</button>
+                <div class="slide-wrapper">
+                    <img id="slider-img" src="" alt="Slide">
+                    <div id="slide-counter">1 / 18</div>
+                </div>
+                <button id="next-slide" class="slider-btn">❯</button>
+            </div>
+            <div class="answer-box">
+                <input type="text" id="task7-answer" placeholder="Ответ (число)" autocomplete="off">
+                <button id="task7-submit" class="btn-primary">Ответить</button>
+            </div>
+            <p id="task7-error" class="error-text hidden">Неверно!</p>
+        </div>
+    </div>
+
+    <!-- Задание 8: ТЕЛЕФОН -->
+    <div id="task8-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-task8">&times;</span>
+            <h2>Задание №8</h2>
+            <h1 style="margin: 30px 0; font-family: 'Courier New';">ПОЗВОНИ МНЕ</h1>
+            <div class="answer-box">
+                <input type="text" id="task8-answer" placeholder="..." autocomplete="off">
+                <button id="task8-submit" class="btn-primary">📞</button>
+            </div>
+            <p id="task8-error" class="error-text hidden">Абонент недоступен</p>
+        </div>
+    </div>
+
+    <!-- Задание 9: ГЕО/ВРЕМЯ -->
+    <div id="task9-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-task9">&times;</span>
+            <h2>Задание №9</h2>
+            <p>Во сколько тебя разбудить?</p>
+            <div class="geo-code">36.949346, -122.065383</div>
+            <div class="answer-box">
+                <input type="text" id="task9-answer" placeholder="ЧЧ:ММ" autocomplete="off">
+                <button id="task9-submit" class="btn-primary">Установить</button>
+            </div>
+            <p id="task9-error" class="error-text hidden">Спи дальше...</p>
+        </div>
+    </div>
+
+    <!-- Задание 10: ФИНАЛ (Без графика) -->
+    <div id="task10-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-task10">&times;</span>
+            <h2>Финал: Задание №10</h2>
+            <p>Реши систему уравнений и назови то, что получится:</p>
+            <div class="math-riddle">
+                <p>1) x² + y² = 1</p>
+                <p>2) x = 0;  y ∈ [-1; 1]</p>
+                <p>3) y = -|x|;  x ∈ [-1; 1]</p>
+            </div>
+            <div class="answer-box">
+                <input type="text" id="task10-answer" placeholder="Ответ..." autocomplete="off">
+                <button id="task10-submit" class="btn-primary">Ответить</button>
+            </div>
+            <p id="task10-error" class="error-text hidden">Неверно!</p>
+        </div>
+    </div>
+
+    <!-- ============================
+         4. МИНИ-ИГРЫ (ПРИЗЫ)
+         ============================ -->
+
+    <!-- Игра 1: Угадай число (Книга) -->
+    <div id="game-book-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Угадай цену 🏷️</h2>
+            <p>Я не ошибся с ценником, честно!</p>
+            <p>Угадай число, которое я загадал.</p>
+            <div class="answer-box">
+                <input type="number" id="book-guess-input" placeholder="0" autocomplete="off">
+                <button id="book-guess-submit" class="btn-primary">Проверить</button>
+            </div>
+            <p id="book-guess-msg" class="error-text" style="margin-top:10px; color: var(--primary); font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <!-- Игра 2: Ван Гог (Пазл) -->
+    <div id="game-art-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Чья это картина? 🎨</h2>
+            <div class="art-img-container">
+                <img src="assets/vangogh.jpg" alt="Art" style="max-width: 100%; border-radius: 10px; border: 2px solid gold;">
+            </div>
+            <p>Подпиши её (Имя художника)</p>
+            <div class="answer-box">
+                <input type="text" id="art-guess-input" placeholder="Имя..." autocomplete="off">
+                <button id="art-guess-submit" class="btn-primary">Подписать</button>
+            </div>
+            <p id="art-guess-msg" class="error-text hidden">Неверно!</p>
+        </div>
+    </div>
+
+    <!-- Игра 3: Граммофон (Пятнашки) -->
+    <div id="game-puzzle-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Собери Грамофон 🎶</h2>
+            <p>Кликни на плитку, чтобы двигать её</p>
+            <div id="puzzle-container" class="puzzle-board"></div>
+            <button id="puzzle-reset" class="btn-small">Сдаться (Перемешать)</button>
+        </div>
+    </div>
+
+    <!-- ============================
+         5. ИНФО ОКНА
+         ============================ -->
+    
+    <!-- Воспоминания (Галерея) -->
+    <div id="memories-modal" class="modal hidden">
+        <div class="modal-content large-modal">
+            <span class="close-modal" id="close-memories">&times;</span>
+            <h2>Наши моменты ❤️</h2>
+            <p style="margin-bottom: 20px; color: #aaa;">Нажми на фото, чтобы открыть</p>
+            <div id="gallery-grid" class="gallery-grid"></div>
+        </div>
+    </div>
+
+    <!-- Лайтбокс (Просмотр фото) -->
+    <div id="lightbox" class="lightbox hidden">
+        <span class="close-lightbox">&times;</span>
+        <img id="lightbox-img" src="" alt="Full View">
+    </div>
+
+    <!-- О нас -->
     <div id="about-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h2>О проекте</h2>
-            <p>Этот сайт был создан специально для тебя, чтобы сделать твой День Рождения незабываемым!</p>
-            <p>Дизайн, код и душа вложены в каждую кнопку.</p>
+            <p>Этот сайт был создан специально для тебя!</p>
+            <p>Дизайн, код и душа вложены в каждую строчку.</p>
             <br>
-            <p>Создатели:</p>
-            <p>Атабек и ночь с ноутбуком в обнимку и Байрам который который придумал задании</p>
-            <p>И gpt который просто был</p>
+            <p>Создатели: Твои друзя ❤️</p>
         </div>
     </div>
 
-    <!-- 4. Приз -->
+    <!-- Победа (Финальный приз) -->
     <div id="prize-modal" class="modal hidden">
         <div class="modal-content prize-content">
             <h2>ПОБЕДА! 🎉</h2>
@@ -143,33 +393,7 @@
         </div>
     </div>
 
+    <!-- Подключение главного скрипта -->
     <script type="module" src="js/main.js"></script>
-
-    <!-- МОДАЛКА: ПОКЕР -->
-    <div id="poker-modal" class="modal hidden">
-        <div class="modal-content poker-table">
-            <span class="close-modal" id="close-poker">&times;</span>
-            <h2>🃏 Poker Challenge</h2>
-            
-            <div class="poker-info">
-                <div class="balance-box">Баланс: <span id="poker-balance">500</span> 💰</div>
-                <div class="goal-box">Цель: 1000 🎯</div>
-            </div>
-
-            <!-- Поле для карт -->
-            <div class="cards-container" id="poker-cards">
-                <div class="card-slot">?</div>
-                <div class="card-slot">?</div>
-                <div class="card-slot">?</div>
-                <div class="card-slot">?</div>
-                <div class="card-slot">?</div>
-            </div>
-
-            <p id="poker-status">Собери комбинацию (Пара и выше)!</p>
-
-            <button id="poker-deal-btn" class="btn-primary">Ставка 100 и Сдача</button>
-        </div>
-    </div>
 </body>
-
 </html>
