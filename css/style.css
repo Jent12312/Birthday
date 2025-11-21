@@ -1,0 +1,525 @@
+/* =========================================
+   1. ГЛОБАЛЬНЫЕ НАСТРОЙКИ И ПЕРЕМЕННЫЕ
+   ========================================= */
+:root {
+    --primary: #ff4081;   /* Ярко-розовый */
+    --secondary: #7c4dff; /* Глубокий фиолетовый */
+    --bg-dark: #11111f;   /* Темный фон сайта */
+    --text-light: #fff;
+    --gold: #ffd700;      /* Золото */
+    --poker-green: #2e7d32; /* Сукно для покера */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow-x: hidden; /* Блокируем горизонтальную прокрутку */
+}
+
+/* Холст для конфетти (поверх всего) */
+#confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* =========================================
+   2. УТИЛИТЫ И АНИМАЦИИ
+   ========================================= */
+.hidden { display: none !important; }
+
+.fade-in { animation: fadeIn 1s forwards; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Пульсация (для важных кнопок) */
+.spin-pulse { animation: pulse 2s infinite; }
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(124, 77, 255, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(124, 77, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(124, 77, 255, 0); }
+}
+
+/* =========================================
+   3. КНОПКИ (UI)
+   ========================================= */
+button { cursor: pointer; outline: none; }
+
+/* Основная кнопка */
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
+}
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 64, 129, 0.6);
+}
+.btn-primary:disabled {
+    background: #444;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Кнопка с обводкой */
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--secondary);
+    color: white;
+    padding: 10px 25px;
+    border-radius: 25px;
+    margin-top: 15px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.btn-outline:hover { background: rgba(124, 77, 255, 0.2); }
+
+/* Маленькая кнопка (внутри книги) */
+.btn-small {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 15px;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+/* Кнопка-пранк (Выход) */
+.btn-danger {
+    background: #f44336;
+    color: white;
+    border: none;
+    width: 100px; height: 40px;
+    border-radius: 20px;
+    position: fixed; bottom: 20px; right: 20px;
+    z-index: 1000;
+    font-weight: bold;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* =========================================
+   4. ЭКРАН ВХОДА (VIP СТИЛЬ)
+   ========================================= */
+.screen {
+    width: 100%; min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity 0.5s;
+}
+
+/* Карточка входа */
+.auth-card {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    width: 100%; max-width: 350px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Аватарка */
+.auth-avatar {
+    width: 70px; height: 70px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 35px;
+    margin: 0 auto 20px;
+    box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+    animation: float 3s ease-in-out infinite;
+}
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+.auth-card h2 { margin-bottom: 5px; font-weight: 700; letter-spacing: 1px; }
+.auth-card p { font-size: 13px; color: #aaa; margin-bottom: 30px; }
+
+/* Поля ввода с плавающим лейблом */
+.input-group { position: relative; margin-bottom: 25px; text-align: left; }
+
+.input-group input {
+    width: 100%; padding: 10px 0;
+    font-size: 16px; color: #fff;
+    border: none; border-bottom: 2px solid #555;
+    outline: none; background: transparent;
+    transition: border-color 0.3s;
+}
+.input-group label {
+    position: absolute; top: 10px; left: 0;
+    font-size: 16px; color: #999;
+    pointer-events: none;
+    transition: 0.3s ease all;
+}
+
+/* Анимация лейбла */
+.input-group input:focus ~ label,
+.input-group input:valid ~ label {
+    top: -20px; font-size: 12px; color: var(--primary);
+}
+.input-group input:focus,
+.input-group input:valid {
+    border-bottom-color: var(--primary);
+}
+
+/* Кнопка логина */
+.btn-login {
+    width: 100%; padding: 12px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border: none; border-radius: 25px;
+    color: white; font-size: 16px; font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(124, 77, 255, 0.4);
+    transition: 0.3s;
+}
+.btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(124, 77, 255, 0.6); }
+
+/* Тряска при ошибке */
+.shake { animation: shake 0.5s; border-color: #f44336 !important; }
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* =========================================
+   5. ОСНОВНОЙ ЭКРАН И НАВИГАЦИЯ
+   ========================================= */
+.screen.scrollable {
+    justify-content: flex-start;
+    height: auto;
+    overflow-y: auto;
+    padding-bottom: 80px;
+}
+
+.top-nav { position: absolute; top: 20px; right: 20px; z-index: 100; }
+.nav-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    padding: 8px 15px; border-radius: 20px;
+    margin-left: 5px; transition: 0.3s; font-size: 14px;
+    backdrop-filter: blur(5px);
+}
+.nav-btn:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* =========================================
+   6. 3D КНИГА (ОТКРЫТКА)
+   ========================================= */
+.book-container {
+    margin-top: 60px;
+    perspective: 1500px;
+    width: 320px; height: 460px;
+    position: relative; z-index: 10;
+    flex-shrink: 0;
+}
+
+.book {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    transition: transform 0.5s;
+}
+.book:hover { transform: translateY(-5px); }
+
+/* Обложка */
+.cover {
+    position: absolute; width: 100%; height: 100%;
+    transform-origin: left;
+    transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transform-style: preserve-3d; z-index: 2;
+    border-radius: 5px 15px 15px 5px;
+}
+.book.open .cover { transform: rotateY(-160deg); }
+
+.front {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    position: absolute; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; backface-visibility: hidden;
+    padding: 20px; color: white;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.6);
+    border-radius: 5px 15px 15px 5px;
+}
+
+/* Золотая рамка */
+.deco-border {
+    position: absolute;
+    top: 15px; left: 15px; right: 15px; bottom: 15px;
+    border: 2px solid rgba(255, 215, 0, 0.7);
+    border-radius: 5px 10px 10px 5px;
+    pointer-events: none;
+}
+
+.front h1 {
+    font-family: 'Georgia', serif; font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); margin-bottom: 10px;
+}
+.click-hint {
+    font-size: 0.9rem; opacity: 0.9; margin-top: 20px;
+    animation: bounceText 2s infinite;
+}
+@keyframes bounceText { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+.back {
+    background: #333; transform: rotateY(180deg);
+    backface-visibility: hidden; position: absolute;
+    width: 100%; height: 100%; border-radius: 5px 15px 15px 5px;
+}
+
+/* Страница */
+.page {
+    position: absolute; width: 98%; height: 98%;
+    top: 1%; left: 0;
+    background: #fffaf0; color: #333;
+    border-radius: 5px 15px 15px 5px;
+    z-index: 1; display: flex; justify-content: center; align-items: center;
+    box-shadow: inset 5px 0 10px rgba(0, 0, 0, 0.1);
+    background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 20px 100%;
+}
+.page-content {
+    text-align: center; padding: 20px;
+    width: 90%; height: 90%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+.page h2 { color: var(--primary); margin-bottom: 15px; font-family: 'Georgia', serif; }
+.page p { line-height: 1.6; font-size: 15px; color: #555; margin-bottom: 10px; }
+
+/* =========================================
+   7. КОЛЕСО ФОРТУНЫ
+   ========================================= */
+.game-section {
+    margin-top: 60px; text-align: center;
+    width: 100%; max-width: 500px; padding: 0 20px;
+}
+
+.wheel-container-border {
+    position: relative; width: 320px; height: 320px;
+    margin: 30px auto;
+    border-radius: 50%;
+    border: 8px solid white;
+    box-shadow: 0 0 25px rgba(255, 64, 129, 0.3);
+    overflow: hidden; 
+}
+
+.pointer {
+    position: absolute; top: -5px; left: 50%;
+    transform: translateX(-50%); z-index: 20;
+    font-size: 45px; color: var(--gold);
+    text-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+}
+
+.wheel {
+    width: 100%; height: 100%; border-radius: 50%;
+    position: relative;
+    background: conic-gradient(
+        #ff4081 0deg 60deg, #222 60deg 120deg, 
+        #7c4dff 120deg 180deg, #222 180deg 240deg, 
+        #ff4081 240deg 300deg, #222 300deg 360deg
+    );
+    transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); 
+}
+
+/* Текст на секторах */
+.label {
+    position: absolute; top: 0; left: 50%;
+    width: 40px; height: 50%;
+    margin-left: -20px;
+    transform-origin: bottom center;
+    transform: rotate(calc(60deg * var(--i) + 30deg));
+    display: flex; justify-content: center; padding-top: 25px;
+    pointer-events: none;
+}
+.label span {
+    color: white; font-weight: bold; font-size: 14px;
+    text-shadow: 0 1px 2px black; text-align: center;
+    transition: all 0.5s;
+}
+
+/* Состояние "Взято" */
+.label.claimed span {
+    opacity: 0.3; color: #888;
+    text-decoration: line-through; transform: scale(0.8);
+}
+.label.claimed span::after {
+    content: '✔'; display: block; color: #00e676;
+    font-size: 18px; margin-top: 2px; text-decoration: none;
+}
+
+/* =========================================
+   8. ПОКЕР (ИГРА)
+   ========================================= */
+.poker-table {
+    background: var(--poker-green);
+    color: white; border: 5px solid #1b5e20;
+    width: 95%; max-width: 550px;
+}
+
+.poker-info {
+    display: flex; justify-content: space-between;
+    margin: 15px 0; font-size: 18px; font-weight: bold;
+    background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;
+}
+
+.cards-container {
+    display: flex; justify-content: center; gap: 8px;
+    margin: 20px 0; perspective: 600px; min-height: 110px;
+}
+
+/* Карта */
+.poker-card {
+    width: 65px; height: 100px;
+    background: white; border-radius: 8px;
+    color: black;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: bold; font-size: 22px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    animation: flipIn 0.5s forwards;
+    user-select: none; cursor: pointer;
+    position: relative; transition: transform 0.2s, border 0.2s;
+}
+.poker-card:hover { transform: translateY(-5px); }
+.poker-card.red { color: #d32f2f; }
+.poker-card.black { color: #212121; }
+
+@keyframes flipIn {
+    from { transform: rotateY(90deg); opacity: 0; }
+    to { transform: rotateY(0); opacity: 1; }
+}
+
+/* Выбранная карта (HOLD) */
+.poker-card.held {
+    border: 3px solid gold;
+    transform: translateY(-12px);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+.poker-card.held::after {
+    content: 'HOLD'; position: absolute;
+    bottom: -25px; left: 50%; transform: translateX(-50%);
+    color: gold; font-size: 12px; font-weight: bold;
+    text-shadow: 0 1px 2px black;
+    background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px;
+}
+
+/* Слот для пустой карты */
+.card-slot {
+    width: 65px; height: 100px;
+    background: rgba(0,0,0,0.2);
+    border: 2px dashed rgba(255,255,255,0.3);
+    border-radius: 8px;
+}
+
+#poker-status {
+    min-height: 24px; margin-bottom: 15px;
+    font-weight: bold; color: #ffeb3b;
+    text-shadow: 0 1px 2px black;
+}
+
+/* =========================================
+   9. МОДАЛЬНЫЕ ОКНА
+   ========================================= */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 2000; padding: 20px;
+}
+
+.modal-content {
+    background: white; color: #333; padding: 30px;
+    width: 100%; max-width: 400px; border-radius: 15px;
+    position: relative; text-align: center;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+.modal-content.large-modal { max-width: 600px; }
+
+.close-modal {
+    position: absolute; right: 15px; top: 10px;
+    font-size: 30px; line-height: 30px;
+    cursor: pointer; color: #999; transition: 0.2s;
+}
+.close-modal:hover { color: #333; }
+
+/* Сетка заданий */
+.tasks-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 10px; margin-top: 20px;
+}
+.task-btn {
+    background: var(--secondary); color: white;
+    border: none; padding: 15px 5px; border-radius: 8px;
+    font-size: 14px; cursor: pointer; transition: 0.2s;
+}
+.task-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.task-btn.done {
+    background: #4caf50; opacity: 0.6;
+    cursor: default; transform: none;
+}
+
+/* Галерея */
+.gallery-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 10px; margin-top: 20px;
+}
+.photo-card {
+    background: #eee; border-radius: 10px;
+    overflow: hidden; aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Окно Приза */
+.prize-content {
+    background: linear-gradient(135deg, #fff, #f8f8f8);
+    border: 4px solid var(--gold);
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.prize-icon {
+    font-size: 70px; animation: bounce 2s infinite; margin-bottom: 10px;
+}
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+.prize-text {
+    font-size: 22px; font-weight: bold;
+    color: var(--primary); margin: 15px 0; line-height: 1.4;
+}

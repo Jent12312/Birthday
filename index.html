@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+
+<!-- 1. Вход (Обновленный) -->
+    <section id="auth-screen" class="screen active">
+        <div class="auth-card">
+            <div class="auth-avatar">👑</div>
+            <h2>VIP Entrance</h2>
+            <p>Введите данные для доступа</p>
+            
+            <div class="input-group">
+                <input type="text" id="login-input" required autocomplete="off">
+                <label for="login-input">Имя (Login)</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="pass-input" required>
+                <label for="pass-input">Пароль</label>
+            </div>
+
+            <button id="login-btn" class="btn-login">Открыть двери ✨</button>
+        </div>
+    </section>
+
+    <!-- ОСНОВНОЙ ЭКРАН -->
+    <section id="main-screen" class="screen hidden scrollable">
+        
+        <nav class="top-nav hidden" id="top-nav">
+            <button id="memories-btn" class="nav-btn">📸 Воспоминания</button>
+            <button id="about-btn" class="nav-btn">ℹ️ О нас</button>
+        </nav>
+
+        <!-- ОТКРЫТКА -->
+        <div class="book-container">
+            <div class="book" id="book">
+                <div class="cover">
+                    <div class="front">
+                        <div class="deco-border"></div>
+                        <h1>С Днём<br>Рождения!</h1>
+                        <p class="click-hint">Жми, чтобы открыть ✨</p>
+                    </div>
+                    <div class="back"></div>
+                </div>
+                <div class="page">
+                    <div class="page-content">
+                        <h2>Поздравляем! 🎂</h2>
+                        <p>
+                            Пусть каждый день приносит радость, а удача преследует тебя! 
+                            Ты заслуживаешь самого лучшего!
+                        </p>
+                        <p>Внизу тебя ждут призы. Готов?</p>
+                        <!-- Кнопка для скролла вниз -->
+                        <button id="scroll-down-btn" class="btn-small">К подаркам 👇</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ИГРОВАЯ ЗОНА -->
+        <div id="game-section" class="game-section hidden fade-in">
+            <h2>Колесо Фортуны</h2>
+            <p id="game-msg" style="color: #ff4081; font-weight: bold;">Сначала выполни задания, чтобы получить спины!</p>
+            
+            <div class="wheel-container-border">
+                <div class="pointer">⬇</div>
+                <div class="wheel" id="wheel">
+                    <!-- Сектора -->
+                    <div class="label" style="--i:0"><span>🎁<br>Подарок</span></div>
+                    <div class="label" style="--i:1"><span>💨<br>Ничего</span></div>
+                    <div class="label" style="--i:2"><span>✨<br>Просто<br>подарок</span></div>
+                    <div class="label" style="--i:3"><span>🌵<br>Ничего</span></div>
+                    <div class="label" style="--i:4"><span>🏆<br>СУПЕР<br>ПРИЗ</span></div>
+                    <div class="label" style="--i:5"><span>💩<br>Ничего</span></div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <p>Спинов: <span id="spin-count" style="font-size: 1.5em; color: gold;">0</span></p>
+                <button id="spin-btn" class="btn-primary" disabled>Крутить!</button>
+                <br>
+                <button id="get-spins-btn" class="btn-outline spin-pulse">Выполнить задания</button>
+            </div>
+        </div>
+
+        <button id="exit-btn" class="btn-danger">Выход</button>
+    </section>
+
+    <!-- МОДАЛКИ -->
+
+    <!-- 1. Задания -->
+    <div id="tasks-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Задания</h2>
+            <div id="tasks-grid" class="tasks-grid"></div>
+        </div>
+    </div>
+
+    <!-- 2. Воспоминания (Галерея) -->
+    <div id="memories-modal" class="modal hidden">
+        <div class="modal-content large-modal">
+            <span class="close-modal">&times;</span>
+            <h2>Наши воспоминания</h2>
+            <div class="gallery-grid">
+                <!-- Заглушки для фото (потом поменяешь src на свои) -->
+                <div class="photo-card"><div class="img-placeholder" style="background: #ff9a9e">Фото 1</div></div>
+                <div class="photo-card"><div class="img-placeholder" style="background: #fad0c4">Фото 2</div></div>
+                <div class="photo-card"><div class="img-placeholder" style="background: #a18cd1">Фото 3</div></div>
+                <div class="photo-card"><div class="img-placeholder" style="background: #fbc2eb">Фото 4</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. О нас -->
+    <div id="about-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>О проекте</h2>
+            <p>Этот сайт был создан специально для тебя, чтобы сделать твой День Рождения незабываемым!</p>
+            <p>Дизайн, код и душа вложены в каждую кнопку.</p>
+            <br>
+            <p>Создатели:</p>
+            <p>Атабек и ночь с ноутбуком в обнимку и Байрам который который придумал задании</p>
+        </div>
+    </div>
+
+    <!-- 4. Приз -->
+    <div id="prize-modal" class="modal hidden">
+        <div class="modal-content prize-content">
+            <h2>ПОБЕДА! 🎉</h2>
+            <div class="prize-icon">🎁</div>
+            <p id="prize-text" class="prize-text">Текст</p>
+            <button id="close-prize-btn" class="btn-primary">Круто!</button>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+
+    <!-- МОДАЛКА: ПОКЕР -->
+    <div id="poker-modal" class="modal hidden">
+        <div class="modal-content poker-table">
+            <span class="close-modal" id="close-poker">&times;</span>
+            <h2>🃏 Poker Challenge</h2>
+            
+            <div class="poker-info">
+                <div class="balance-box">Баланс: <span id="poker-balance">500</span> 💰</div>
+                <div class="goal-box">Цель: 1000 🎯</div>
+            </div>
+
+            <!-- Поле для карт -->
+            <div class="cards-container" id="poker-cards">
+                <div class="card-slot">?</div>
+                <div class="card-slot">?</div>
+                <div class="card-slot">?</div>
+                <div class="card-slot">?</div>
+                <div class="card-slot">?</div>
+            </div>
+
+            <p id="poker-status">Собери комбинацию (Пара и выше)!</p>
+
+            <button id="poker-deal-btn" class="btn-primary">Ставка 100 и Сдача</button>
+        </div>
+    </div>
+</body>
+</html>
